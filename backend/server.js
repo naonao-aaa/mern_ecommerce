@@ -1,5 +1,7 @@
 import express from "express"; // Expressフレームワークをインポート
 import products from "./data/products.js"; // 商品データをインポート
+import dotenv from "dotenv"; // dotenvモジュールをインポート（環境変数を読み込むため）
+dotenv.config(); // .envファイルに記載された環境変数を読み込んで、process.envに設定
 
 // サーバーが使用するポート番号を設定。環境変数PORTが設定されていない場合はデフォルトで5000番を使用
 const port = process.env.PORT || 5000;
