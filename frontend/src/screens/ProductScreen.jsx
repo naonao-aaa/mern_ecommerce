@@ -1,12 +1,22 @@
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
-import Rating from "../components/Rating";
-import products from "../products";
+import Rating from "../components/Rating"; // 評価（Rating）を表示するためのコンポーネント
+import axios from "axios";
 
 const ProductScreen = () => {
-  const { id: productId } = useParams(); // URLから:idの部分を取得
-  const product = products.find((p) => p._id === productId); // 商品IDに一致する商品をproducts配列から取得
+  const { id: productId } = useParams(); // useParamsフックでURLのパラメータから:idを取得し、productIdに格納
+  const [product, setProduct] = useState({}); // 商品の情報を格納するためのproductのState。初期値は空のオブジェクト
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const { data } = await axios.get(`/api/products/${productId}`); // 商品詳細を取得（APIのURLに商品IDを指定）
+      setProduct(data); // 取得したデータをproduct Stateにセット
+    };
+
+    fetchProduct(); // fetchProduct関数を実行して商品データを取得
+  }, [productId]);
 
   return (
     <>
