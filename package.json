@@ -13,7 +13,9 @@
   "author": "nao",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.21.1"
+    "express": "^4.21.1",
+    "mongodb": "4.1",
+    "mongoose": "^7.8.2"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
