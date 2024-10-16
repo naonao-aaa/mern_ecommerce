@@ -2,9 +2,14 @@ import express from "express"; // Expressフレームワークをインポート
 import products from "./data/products.js"; // 商品データをインポート
 import dotenv from "dotenv"; // dotenvモジュールをインポート（環境変数を読み込むため）
 dotenv.config(); // .envファイルに記載された環境変数を読み込んで、process.envに設定
+import connectDB from "./config/db.js"; // MongoDBとの接続を行うための関数をインポート
 
 // サーバーが使用するポート番号を設定。環境変数PORTが設定されていない場合はデフォルトで5000番を使用
 const port = process.env.PORT || 5000;
+
+// MongoDBに接続するための関数を実行
+// MongoDBとの接続を確立し、接続成功/失敗の情報をログに出力する処理が実行される
+connectDB();
 
 // Expressアプリケーションの作成
 const app = express();
