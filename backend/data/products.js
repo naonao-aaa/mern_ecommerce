@@ -1,6 +1,6 @@
 const products = [
   {
-    _id: "1",
+    // _id: "1",
     name: "北欧デザイン 木製チェア",
     image: "/images/nordic-chair.jpg",
     description:
@@ -13,7 +13,7 @@ const products = [
     numReviews: 18,
   },
   {
-    _id: "2",
+    // _id: "2",
     name: "レザーソファ",
     image: "/images/vintage-sofa.jpg",
     description:
@@ -26,7 +26,7 @@ const products = [
     numReviews: 22,
   },
   {
-    _id: "3",
+    // _id: "3",
     name: "モダンフロアランプ",
     image: "/images/modern-lamp.jpg",
     description:
@@ -39,7 +39,7 @@ const products = [
     numReviews: 15,
   },
   {
-    _id: "4",
+    // _id: "4",
     name: "ラスティックテーブル",
     image: "/images/rustic-table.jpg",
     description:
@@ -52,7 +52,7 @@ const products = [
     numReviews: 30,
   },
   {
-    _id: "5",
+    // _id: "5",
     name: "装飾用ウォールミラー",
     image: "/images/wall-mirror.jpg",
     description:
@@ -65,7 +65,7 @@ const products = [
     numReviews: 12,
   },
   {
-    _id: "6",
+    // _id: "6",
     name: "オフィスチェア",
     image: "/images/office-chair.jpg",
     description:
