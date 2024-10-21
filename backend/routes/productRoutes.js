@@ -25,7 +25,8 @@ router.get(
       return res.json(product);
     }
     // 商品が見つからなかった場合、404エラーレスポンスを返す
-    res.status(404).json({ message: "Product not found" });
+    res.status(404);
+    throw new Error("Resource not found");
   })
 );
 
