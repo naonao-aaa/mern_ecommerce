@@ -1,8 +1,10 @@
-// 環境によってBASE_URLを変更
-// 開発環境 (development) の場合は、バックエンドAPIがローカルで動いているため、ローカルホストのURLを使用
-// それ以外（本番環境やテスト環境）の場合は、ルートパス ("/") が使われる
-export const BASE_URL =
-  process.env.NODE_ENV === "development" ? "http://localhost:5000" : "/";
+// // 環境によってBASE_URLを変更
+// // 開発環境 (development) の場合は、バックエンドAPIがローカルで動いているため、ローカルホストのURLを使用
+// // それ以外（本番環境やテスト環境）の場合は、ルートパス ("/") が使われる
+// export const BASE_URL =
+//   process.env.NODE_ENV === "development" ? "http://localhost:5000" : "/";
+
+export const BASE_URL = ""; // package.jsonでproxyを設定しているので。
 
 // 商品関連のAPIエンドポイントのベースURL
 export const PRODUCTS_URL = "/api/products";
