@@ -13,9 +13,16 @@ export const productSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5, // 未使用データをキャッシュしておく時間（秒単位）。ここでは5秒間保持
     }),
+    // getProductDetailsエンドポイントを定義
+    getProductDetails: builder.query({
+      query: (productId) => ({
+        url: `${PRODUCTS_URL}/${productId}`, // 特定の商品の詳細情報を取得するためのURL (例: "/api/products/:id")
+      }),
+      keepUnusedDataFor: 5, // この詳細データも5秒間キャッシュ
+    }),
   }),
 });
 
 // Reactコンポーネントで使用するためのフックを自動生成
-// useGetProductsQueryフックをエクスポートし、これを使用して商品データを取得できる
-export const { useGetProductsQuery } = productSlice;
+// それぞれのフックをエクスポートし、これを使用して商品データを取得できる
+export const { useGetProductsQuery, useGetProductDetailsQuery } = productSlice;
