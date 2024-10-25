@@ -1,6 +1,8 @@
 import { Row, Col } from "react-bootstrap";
 import Product from "../components/Product"; // Productコンポーネントをインポート
 import { useGetProductsQuery } from "../slices/productSlice"; // RTK QueryのuseGetProductsQueryフックをインポート
+import Loader from "../components/Loader";
+import Message from "../components/Message";
 
 const HomeScreen = () => {
   const { data: products, isLoading, error } = useGetProductsQuery(); // 商品データを取得
@@ -8,9 +10,11 @@ const HomeScreen = () => {
   return (
     <>
       {isLoading ? (
-        <div>Loading...</div>
+        <Loader />
       ) : error ? (
-        <div>{error?.data.message || error.error}</div>
+        <Message variant="danger">
+          {error?.data?.message || error.error}
+        </Message>
       ) : (
         <>
           <h1>商品一覧</h1>
