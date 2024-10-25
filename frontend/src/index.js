@@ -13,6 +13,8 @@ import {
 } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen";
 import ProductScreen from "./screens/ProductScreen";
+import store from "./store"; //Reduxストアをインポート
+import { Provider } from "react-redux"; //ReduxのProviderコンポーネントをインポート
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,8 +28,9 @@ const router = createBrowserRouter(
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    {/* <App /> */}
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );
 
