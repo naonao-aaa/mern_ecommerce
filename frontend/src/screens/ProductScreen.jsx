@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"; // URLパラメータから商品IDを取得するためのフックをインポート
 import { Link } from "react-router-dom";
 import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
-import { useGetProductDetailsQuery } from "../slices/productSlice"; // 商品の詳細情報を取得するためのRTK Queryフックをインポート
+import { useGetProductDetailsQuery } from "../slices/productApiSlice"; // 商品の詳細情報を取得するためのRTK Queryフックをインポート
 import Rating from "../components/Rating"; // 評価（Rating）を表示するためのコンポーネント
 import Loader from "../components/Loader";
 import Message from "../components/Message";
