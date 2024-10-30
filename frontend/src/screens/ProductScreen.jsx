@@ -99,7 +99,7 @@ const ProductScreen = () => {
                           <Form.Control
                             as="select"
                             value={qty}
-                            onChange={(e) => setQty(parseInt(e.target.value))} // 数量変更時にstateを更新。// parseIntで数値型に変換
+                            onChange={(e) => setQty(Number(e.target.value))} // 数量変更時にstateを更新。// 数値型に変換
                           >
                             {/* 在庫数分の選択肢を生成 */}
                             {[...Array(product.countInStock).keys()].map(
