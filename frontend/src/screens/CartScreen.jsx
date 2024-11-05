@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap"; // レイアウトとスタイルのためのReact Bootstrapコンポーネント
 import { FaTrash } from "react-icons/fa"; // ゴミ箱アイコンのインポート
 import Message from "../components/Message"; // メッセージ表示用コンポーネントのインポート
-import { addToCart } from "../slices/cartSlice"; // カートに商品を追加するアクションのインポート
+import { addToCart, removeFromCart } from "../slices/cartSlice"; // カートに商品を追加するアクションのインポート
 
 const CartScreen = () => {
   const navigate = useNavigate(); // ページ遷移用の関数
@@ -24,10 +24,16 @@ const CartScreen = () => {
     dispatch(addToCart({ ...product, qty })); // 新しい数量でカートに追加
   };
 
-  // カートから商品を削除するハンドラー関数（準備済みコメントアウト）
-  // const removeFromCartHandler = (id) => {
-  //   dispatch(removeFromCart(id));
-  // };
+  // カートから商品を削除するハンドラー関数
+  const removeFromCartHandler = (id) => {
+    dispatch(removeFromCart(id));
+  };
+
+  // レジに進むボタンをクリックした際のハンドラー関数
+  const checkoutHandler = () => {
+    // ログインしていない場合は、ログインページにリダイレクトし、ログイン後は配送情報ページに遷移
+    navigate("/login?redirect=/shipping");
+  };
 
   return (
     <Row>
@@ -76,7 +82,7 @@ const CartScreen = () => {
                     <Button
                       type="button"
                       variant="light"
-                      // onClick={() => removeFromCartHandler(item._id)}
+                      onClick={() => removeFromCartHandler(item._id)}
                     >
                       <FaTrash />
                     </Button>
@@ -106,6 +112,7 @@ const CartScreen = () => {
                 type="button"
                 className="btn-block"
                 disabled={cartItems.length === 0}
+                onClick={checkoutHandler}
               >
                 レジに進む
               </Button>

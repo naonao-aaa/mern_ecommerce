@@ -4,20 +4,7 @@ export const addDecimals = (num) => {
 };
 
 // カートの状態を更新する関数
-export const updateCart = (state, item) => {
-  // カート内に同じIDの商品があるか確認
-  const existItem = state.cartItems.find((x) => x._id === item._id);
-
-  if (existItem) {
-    // 商品が既にある場合、数量を更新
-    state.cartItems = state.cartItems.map((x) =>
-      x._id === existItem._id ? item : x
-    );
-  } else {
-    // 同じ商品がカートにない場合、新しい商品をカートに追加
-    state.cartItems = [...state.cartItems, item];
-  }
-
+export const updateCart = (state) => {
   // 商品合計金額を計算
   state.itemsPrice = addDecimals(
     state.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
