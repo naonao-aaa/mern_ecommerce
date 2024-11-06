@@ -1,8 +1,8 @@
 import { PRODUCTS_URL } from "../constants"; // APIのエンドポイントURLを定数としてインポート
 import { apiSlice } from "./apiSlice"; // 既存のapiSliceをインポートして拡張するために使用
 
-// 商品APIエンドポイントを追加するproductSliceを作成
-export const productSlice = apiSlice.injectEndpoints({
+// 商品APIエンドポイントを追加するproductsApiSliceを作成
+export const productsApiSlice = apiSlice.injectEndpoints({
   // エンドポイントの設定を行う
   endpoints: (builder) => ({
     // getProductsエンドポイントを定義
@@ -25,4 +25,5 @@ export const productSlice = apiSlice.injectEndpoints({
 
 // Reactコンポーネントで使用するためのフックを自動生成
 // それぞれのフックをエクスポートし、これを使用して商品データを取得できる
-export const { useGetProductsQuery, useGetProductDetailsQuery } = productSlice;
+export const { useGetProductsQuery, useGetProductDetailsQuery } =
+  productsApiSlice;

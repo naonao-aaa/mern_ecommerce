@@ -1,13 +1,35 @@
-import { useParams } from "react-router-dom"; // URLパラメータから商品IDを取得するためのフックをインポート
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
-import { useGetProductDetailsQuery } from "../slices/productSlice"; // 商品の詳細情報を取得するためのRTK Queryフックをインポート
+import { useDispatch } from "react-redux";
+import {
+  Form,
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Card,
+  Button,
+} from "react-bootstrap";
+import { useGetProductDetailsQuery } from "../slices/productApiSlice"; // 商品の詳細情報を取得するためのRTK Queryフックをインポート
 import Rating from "../components/Rating"; // 評価（Rating）を表示するためのコンポーネント
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import { addToCart } from "../slices/cartSlice"; // カートに商品を追加するためのアクションをインポート
 
 const ProductScreen = () => {
   const { id: productId } = useParams(); // useParamsフックでURLのパラメータから:idを取得し、productIdに格納
+
+  const dispatch = useDispatch(); // Reduxのアクションをディスパッチするためのフック
+  const navigate = useNavigate(); // ページ遷移を行うためのフック
+
+  const [qty, setQty] = useState(1); // 商品の数量を管理するstate
+
+  // 商品をカートに追加するハンドラー関数
+  const addToCartHandler = () => {
+    dispatch(addToCart({ ...product, qty })); // 商品情報と選択した数量をdispatchでcartに追加
+    navigate("/cart"); // カートページに遷移
+  };
 
   const {
     data: product,
@@ -67,11 +89,38 @@ const ProductScreen = () => {
                       </Col>
                     </Row>
                   </ListGroup.Item>
+
+                  {/* 在庫がある場合は数量選択を表示 */}
+                  {product.countInStock > 0 && (
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>数量</Col>
+                        <Col>
+                          <Form.Control
+                            as="select"
+                            value={qty}
+                            onChange={(e) => setQty(Number(e.target.value))} // 数量変更時にstateを更新。// 数値型に変換
+                          >
+                            {/* 在庫数分の選択肢を生成 */}
+                            {[...Array(product.countInStock).keys()].map(
+                              (x) => (
+                                <option key={x + 1} value={x + 1}>
+                                  {x + 1}
+                                </option>
+                              )
+                            )}
+                          </Form.Control>
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                  )}
+
                   <ListGroup.Item>
                     <Button
                       className="btn-block"
                       type="button"
                       disabled={product.countInStock === 0}
+                      onClick={addToCartHandler} // クリックでaddToCartHandlerを呼び出し
                     >
                       カートに追加
                     </Button>
