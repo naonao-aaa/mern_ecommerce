@@ -5,7 +5,24 @@ import User from "../models/userModel.js"; // Userモデルをインポート
 // @route   POST /api/users/login
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
-  res.send("auth user");
+  const { email, password } = req.body; // リクエストボディからemailとpasswordを取得
+
+  const user = await User.findOne({ email }); // emailフィールドが一致するユーザーをDBから検索
+
+  // ユーザーが存在し、かつ入力されたパスワードが一致する場合
+  if (user && (await user.matchPassword(password))) {
+    // ユーザー情報をJSON形式でレスポンスに返す
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
+  } else {
+    // ユーザーが見つからない、またはパスワードが一致しない場合はエラーレスポンスを返す
+    res.status(401);
+    throw new Error("Invalid email or password");
+  }
 });
 
 // @desc    新しいユーザーの登録

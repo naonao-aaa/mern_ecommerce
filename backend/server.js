@@ -16,6 +16,11 @@ connectDB();
 // Expressアプリケーションの作成
 const app = express();
 
+// リクエストのbodyからJSON形式のデータを解析するためのミドルウェア。この記述により、req.bodyでJSONデータが取得可能になる。
+app.use(express.json());
+// リクエストのbodyからURLエンコードされたデータを解析するためのミドルウェア。extendedオプションをtrueにすると、ネストされたオブジェクトも処理可能
+app.use(express.urlencoded({ extended: true }));
+
 // 商品APIのルート（/api/products）を設定
 // すべての商品に関するリクエストは、このルーティングモジュールで処理される
 app.use("/api/products", productRoutes);
