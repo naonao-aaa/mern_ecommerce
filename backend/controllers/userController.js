@@ -1,5 +1,6 @@
 import asyncHandler from "../middleware/asyncHandler.js"; // 非同期エラーをキャッチするミドルウェアをインポート
 import User from "../models/userModel.js"; // Userモデルをインポート
+import jwt from "jsonwebtoken"; // JWT（JSON Web Token）を使用するためのモジュールをインポート
 
 // @desc    ユーザー認証とトークンの取得
 // @route   POST /api/users/login
@@ -11,6 +12,18 @@ const authUser = asyncHandler(async (req, res) => {
 
   // ユーザーが存在し、かつ入力されたパスワードが一致する場合
   if (user && (await user.matchPassword(password))) {
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "30d", // トークンの有効期限を30日間に設定
+    });
+
+    // JWTをHTTP-Onlyクッキーとして設定
+    res.cookie("jwt", token, {
+      httpOnly: true, // JavaScriptからアクセスできないようにする（セキュリティ強化）
+      secure: process.env.NODE_ENV !== "development", // 開発環境以外ではセキュアなクッキーを使用
+      sameSite: "strict", // CSRF攻撃を防ぐためにstrict設定
+      maxAge: 30 * 24 * 60 * 60 * 1000, // クッキーの有効期間を30日間に設定
+    });
+
     // ユーザー情報をJSON形式でレスポンスに返す
     res.json({
       _id: user._id,
