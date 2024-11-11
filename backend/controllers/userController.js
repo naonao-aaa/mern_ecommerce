@@ -49,7 +49,13 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users/logout
 // @access  Private
 const logoutUser = asyncHandler(async (req, res) => {
-  res.send("logout user");
+  // クッキーの "jwt" トークンを空にし、クッキーの有効期限を過去に設定して削除
+  res.cookie("jwt", "", {
+    httpOnly: true, // JavaScriptからのアクセスを禁止し、セキュリティを強化
+    expires: new Date(0), // 有効期限を1970年1月1日に設定して、クッキーを即時無効化
+  });
+  // ログアウトが成功したことを示すメッセージを含むレスポンスを返す
+  res.status(200).json({ message: "Logged out successfully" });
 });
 
 // @desc    ユーザープロフィールの取得
