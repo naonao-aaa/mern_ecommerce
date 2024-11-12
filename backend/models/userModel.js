@@ -33,6 +33,17 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password); // bcryptを使ってパスワードを比較
 };
 
+// パスワードをbcryptで暗号化するためのミドルウェア
+userSchema.pre("save", async function (next) {
+  // パスワードが変更されていない場合は、次の処理に進む
+  if (!this.isModified("password")) {
+    next();
+  }
+
+  const salt = await bcrypt.genSalt(10); // bcryptでパスワードをハッシュ化するためのソルトを生成
+  this.password = await bcrypt.hash(this.password, salt); // ユーザーのパスワードをソルトと共にハッシュ化して、passwordフィールドに設定
+});
+
 // 'User'モデルを作成し、userSchemaをMongoDBにマッピング
 const User = mongoose.model("User", userSchema);
 

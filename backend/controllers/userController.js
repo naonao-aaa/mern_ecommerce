@@ -1,6 +1,6 @@
 import asyncHandler from "../middleware/asyncHandler.js"; // 非同期エラーをキャッチするミドルウェアをインポート
 import User from "../models/userModel.js"; // Userモデルをインポート
-import jwt from "jsonwebtoken"; // JWT（JSON Web Token）を使用するためのモジュールをインポート
+import generateToken from "../utils/generateToken.js"; //generateToken関数をインポート
 
 // @desc    ユーザー認証とトークンの取得
 // @route   POST /api/users/login
@@ -12,17 +12,8 @@ const authUser = asyncHandler(async (req, res) => {
 
   // ユーザーが存在し、かつ入力されたパスワードが一致する場合
   if (user && (await user.matchPassword(password))) {
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "30d", // トークンの有効期限を30日間に設定
-    });
-
-    // JWTをHTTP-Onlyクッキーとして設定
-    res.cookie("jwt", token, {
-      httpOnly: true, // JavaScriptからアクセスできないようにする（セキュリティ強化）
-      secure: process.env.NODE_ENV !== "development", // 開発環境以外ではセキュアなクッキーを使用
-      sameSite: "strict", // CSRF攻撃を防ぐためにstrict設定
-      maxAge: 30 * 24 * 60 * 60 * 1000, // クッキーの有効期間を30日間に設定
-    });
+    // generateToken関数を呼び出し、トークンを生成してHTTP-Onlyクッキーに保存
+    generateToken(res, user._id);
 
     // ユーザー情報をJSON形式でレスポンスに返す
     res.json({
@@ -42,7 +33,37 @@ const authUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  res.send("register user");
+  const { name, email, password } = req.body; // リクエストボディからname, email, passwordを取得
+
+  const userExists = await User.findOne({ email }); // DBから同じemailのユーザーが存在するか確認
+
+  // 既に同じemailを持つユーザーがいる場合、エラーレスポンスを返す
+  if (userExists) {
+    res.status(400);
+    throw new Error("User already exists");
+  }
+
+  // 新しいユーザーをDBに作成
+  const user = await User.create({
+    name,
+    email,
+    password,
+  });
+
+  // ユーザーが作成された場合、トークンを生成してクッキーに保存し、ユーザー情報をJSON形式で返す
+  if (user) {
+    generateToken(res, user._id);
+    res.status(201).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
+  } else {
+    // ユーザー作成に失敗した場合、エラーレスポンスを返す
+    res.status(400);
+    throw new Error("Invalid user data");
+  }
 });
 
 // @desc    ログアウト / クッキーのクリア
