@@ -16,7 +16,7 @@ const authUser = asyncHandler(async (req, res) => {
     generateToken(res, user._id);
 
     // ユーザー情報をJSON形式でレスポンスに返す
-    res.json({
+    res.status(200).json({
       _id: user._id,
       name: user.name,
       email: user.email,
@@ -83,14 +83,56 @@ const logoutUser = asyncHandler(async (req, res) => {
 // @route   GET /api/users/profile
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
-  res.send("get user profile");
+  // 現在認証されているユーザーのIDを使用して、DBからユーザー情報を取得
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    // ユーザーが見つかった場合、ユーザー情報をJSON形式で返す
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
+  } else {
+    // ユーザーが見つからない場合、エラーメッセージを返す
+    res.status(404);
+    throw new Error("User not found");
+  }
 });
 
 // @desc    ユーザープロフィールの更新
 // @route   PUT /api/users/profile
 // @access  Private
 const updateUserProfile = asyncHandler(async (req, res) => {
-  res.send("update user profile");
+  // 現在認証されているユーザーのIDでDBからユーザー情報を取得
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    // ユーザーが存在する場合、リクエストボディの新しい値でユーザー情報を更新
+    user.name = req.body.name || user.name; // リクエストに`name`が含まれていればその値で更新し、無ければ既存の値を維持
+    user.email = req.body.email || user.email; // リクエストに`email`が含まれていればその値で更新し、無ければ既存の値を維持
+
+    // パスワードが提供されていれば、それを更新
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+
+    // 更新後のユーザー情報をDBに保存
+    const updatedUser = await user.save();
+
+    // 更新されたユーザー情報をクライアントに返す
+    res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+    });
+  } else {
+    // ユーザーが見つからない場合、404エラーステータスとエラーメッセージを返す
+    res.status(404);
+    throw new Error("User not found");
+  }
 });
 
 // @desc    全ユーザーの取得
