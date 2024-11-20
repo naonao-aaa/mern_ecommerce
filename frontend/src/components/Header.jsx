@@ -1,12 +1,19 @@
-import { Navbar, Nav, Container, Badge } from "react-bootstrap"; // ナビゲーションバー関連のコンポーネントをインポート
+import { Navbar, Nav, Container, NavDropdown, Badge } from "react-bootstrap"; // ナビゲーションバー関連のコンポーネントをインポート
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 import logo from "../assets/logo.png"; // ロゴ画像をインポート
 import { LinkContainer } from "react-router-bootstrap"; // React Router用のリンクコンテナ
 import { useSelector } from "react-redux"; // Reduxのstateを取得するフック
 
 const Header = () => {
-  // Reduxのstateからカートのアイテムを取得
+  // Reduxのstateからカート内のアイテム情報を取得
   const { cartItems } = useSelector((state) => state.cart);
+  // Reduxのstateからログイン中のユーザー情報を取得
+  const { userInfo } = useSelector((state) => state.auth);
+
+  // ログアウトボタンが押されたときの処理
+  const logoutHandler = () => {
+    console.log("logout");
+  };
 
   return (
     <header>
@@ -33,11 +40,29 @@ const Header = () => {
                   )}
                 </Nav.Link>
               </LinkContainer>
-              <LinkContainer to="/login">
-                <Nav.Link href="/login">
-                  <FaUser /> Sign In
-                </Nav.Link>
-              </LinkContainer>
+
+              {/* ユーザーがログインしているかどうかで表示を切り替え */}
+              {userInfo ? (
+                <>
+                  <NavDropdown title={userInfo.name} id="username">
+                    {/* プロフィールページへのリンク */}
+                    <LinkContainer to="/profile">
+                      <NavDropdown.Item>Profile</NavDropdown.Item>
+                    </LinkContainer>
+                    {/* ログアウトボタン */}
+                    <NavDropdown.Item onClick={logoutHandler}>
+                      Logout
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                </>
+              ) : (
+                // ユーザーがログインしていない場合、ログインページへのリンクを表示
+                <LinkContainer to="/login">
+                  <Nav.Link>
+                    <FaUser /> Sign In
+                  </Nav.Link>
+                </LinkContainer>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -45,4 +70,5 @@ const Header = () => {
     </header>
   );
 };
+
 export default Header;
