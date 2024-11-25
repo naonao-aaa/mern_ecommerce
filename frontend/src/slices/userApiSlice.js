@@ -21,8 +21,17 @@ export const userApiSlice = apiSlice.injectEndpoints({
         method: "POST", // HTTP POSTメソッドでリクエストを送信
       }),
     }),
+    // ユーザー登録用のエンドポイント
+    register: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}`, // リクエスト先のURL（ユーザー関連エンドポイント）
+        method: "POST", // HTTP POSTメソッドでリクエストを送信
+        body: data, // リクエストボディとして送信するデータ
+      }),
+    }),
   }),
 });
 
 // エクスポート
-export const { useLoginMutation, useLogoutMutation } = userApiSlice;
+export const { useLoginMutation, useLogoutMutation, useRegisterMutation } =
+  userApiSlice;
