@@ -2,7 +2,10 @@ import { Navbar, Nav, Container, NavDropdown, Badge } from "react-bootstrap"; //
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 import logo from "../assets/logo.png"; // ロゴ画像をインポート
 import { LinkContainer } from "react-router-bootstrap"; // React Router用のリンクコンテナ
-import { useSelector } from "react-redux"; // Reduxのstateを取得するフック
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom"; // ページ遷移を可能にするフックをインポート
+import { useLogoutMutation } from "../slices/userApiSlice"; // ログアウトAPIエンドポイント用のフックをインポート
+import { logout } from "../slices/authSlice"; // ログアウトアクションをインポート
 
 const Header = () => {
   // Reduxのstateからカート内のアイテム情報を取得
@@ -10,9 +13,25 @@ const Header = () => {
   // Reduxのstateからログイン中のユーザー情報を取得
   const { userInfo } = useSelector((state) => state.auth);
 
-  // ログアウトボタンが押されたときの処理
-  const logoutHandler = () => {
-    console.log("logout");
+  const dispatch = useDispatch(); // Reduxのアクションをディスパッチするための関数を取得
+  const navigate = useNavigate(); // ページ遷移を行うためのフックを取得
+
+  // useLogoutMutationからログアウトAPIコール用の関数を取得
+  const [logoutApiCall] = useLogoutMutation();
+
+  // ログアウト処理
+  const logoutHandler = async () => {
+    try {
+      // サーバーにログアウトリクエストを送信
+      await logoutApiCall().unwrap();
+      // Reduxのauth状態をクリア（ログアウト状態にする）
+      dispatch(logout());
+      // ログインページに遷移
+      navigate("/login");
+    } catch (err) {
+      // ログアウト処理中のエラーをコンソールに出力
+      console.error(err);
+    }
   };
 
   return (

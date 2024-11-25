@@ -13,8 +13,16 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data, // リクエストのボディ部分に送信するデータを指定
       }),
     }),
+    // ログアウト処理のエンドポイント
+    logout: builder.mutation({
+      // API呼び出し時のリクエスト設定を定義
+      query: () => ({
+        url: `${USERS_URL}/logout`, // USERS_URLに"/logout"を追加したURL
+        method: "POST", // HTTP POSTメソッドでリクエストを送信
+      }),
+    }),
   }),
 });
 
-// useLoginMutationフックをエクスポート
-export const { useLoginMutation } = userApiSlice;
+// エクスポート
+export const { useLoginMutation, useLogoutMutation } = userApiSlice;
