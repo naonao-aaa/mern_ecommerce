@@ -4,7 +4,7 @@ import { updateCart } from "../utils/cartUtils"; // updateCart関数をインポ
 // カートの初期状態を設定
 const initialState = localStorage.getItem("cart") // ローカルストレージに"cart"データがあるか確認
   ? JSON.parse(localStorage.getItem("cart")) // あればそれを初期状態として使う（JSON文字列をオブジェクトに変換）
-  : { cartItems: [] }; // なければ空のカートアイテムの配列を持つオブジェクトとして初期化
+  : { cartItems: [], shippingAddress: {}, paymentMethod: "PayPal" }; // 初期状態として空のカートとデフォルトの設定を指定
 
 // createSliceでcartSliceを作成し、カートの状態とreducersを管理
 const cartSlice = createSlice({
@@ -40,9 +40,17 @@ const cartSlice = createSlice({
       // カートの価格や内容を更新し、保存
       return updateCart(state); // 更新した状態をローカルストレージにも反映
     },
+    // 配送先住所の保存をするアクション
+    saveShippingAddress: (state, action) => {
+      // 入力された配送先住所をstateに保存
+      state.shippingAddress = action.payload;
+      // ローカルストレージに更新したカート状態を保存
+      localStorage.setItem("cart", JSON.stringify(state));
+    },
   },
 });
 
-export const { addToCart, removeFromCart } = cartSlice.actions; // 各actionをエクスポートし、他のコンポーネントで利用可能にする
+export const { addToCart, removeFromCart, saveShippingAddress } =
+  cartSlice.actions; // 各actionをエクスポート
 
 export default cartSlice.reducer; // cartSliceのreducerをエクスポートして、Reduxストアで使用可能にする
