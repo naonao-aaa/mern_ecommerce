@@ -3,6 +3,7 @@ import { Form, Button } from "react-bootstrap"; // BootstrapのFormコンポー�
 import { useDispatch, useSelector } from "react-redux"; // Reduxのdispatchとstateセレクタを使用
 import { useNavigate } from "react-router-dom"; // ルーティング用のnavigate関数をインポート
 import FormContainer from "../components/FormContainer"; // フォームを中央に配置するコンポーネントをインポート
+import CheckoutSteps from "../components/CheckoutSteps";
 import { saveShippingAddress } from "../slices/cartSlice"; // Reduxのアクションをインポート
 
 const ShippingScreen = () => {
@@ -32,6 +33,7 @@ const ShippingScreen = () => {
 
   return (
     <FormContainer>
+      <CheckoutSteps step1 step2 />
       <h1>Shipping</h1>
       <Form onSubmit={submitHandler}>
         {/* 住所の入力フォーム */}
