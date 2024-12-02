@@ -47,10 +47,21 @@ const cartSlice = createSlice({
       // ローカルストレージに更新したカート状態を保存
       localStorage.setItem("cart", JSON.stringify(state));
     },
+    // 支払い方法を保存するアクション
+    savePaymentMethod: (state, action) => {
+      // action.payloadには新しい支払い方法が含まれている
+      state.paymentMethod = action.payload;
+      // カートの状態をローカルストレージに保存
+      localStorage.setItem("cart", JSON.stringify(state));
+    },
   },
 });
 
-export const { addToCart, removeFromCart, saveShippingAddress } =
-  cartSlice.actions; // 各actionをエクスポート
+export const {
+  addToCart,
+  removeFromCart,
+  saveShippingAddress,
+  savePaymentMethod,
+} = cartSlice.actions; // 各actionをエクスポート
 
 export default cartSlice.reducer; // cartSliceのreducerをエクスポートして、Reduxストアで使用可能にする
