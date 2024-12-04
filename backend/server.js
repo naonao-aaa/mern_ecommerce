@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser"; // Cookieの解析を行うための�
 import connectDB from "./config/db.js"; // MongoDBとの接続を行うための関数をインポート
 import productRoutes from "./routes/productRoutes.js"; // 商品に関するルーティングを管理するモジュールをインポート
 import userRoutes from "./routes/userRoutes.js"; // ユーザーに関するルーティングを管理するモジュールをインポート
+import orderRoutes from "./routes/orderRoutes.js"; // 注文に関するルーティングを管理するモジュールをインポート
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js"; // 404エラーハンドラーとカスタムエラーハンドラーをインポート
 
 // サーバーが使用するポート番号を設定。環境変数PORTが設定されていない場合はデフォルトで5000番を使用
@@ -33,6 +34,10 @@ app.use("/api/products", productRoutes);
 // ユーザーAPIのルート（/api/users）を設定
 // すべてのユーザー関連リクエストはこのルーティングモジュールで処理される
 app.use("/api/users", userRoutes);
+
+// 注文APIのルート（/api/orders）を設定
+// すべての注文関連のリクエストは、このルーティングモジュールで処理される
+app.use("/api/orders", orderRoutes);
 
 // エンドポイント：ルート（/）
 // APIの動作確認用のシンプルなエンドポイント。文字列を返す
