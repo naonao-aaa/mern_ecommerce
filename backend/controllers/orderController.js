@@ -4,17 +4,66 @@ import Order from "../models/orderModel.js"; // Mongooseを使用した注文モ
 // @desc    Create new order
 // @route   POST /api/orders
 // @access  Private
+// 新しい注文を作成する処理
 const addOrderItems = asyncHandler(async (req, res) => {
-  // 新しい注文を作成する処理
-  res.send("create order"); // 仮のレスポンスとして文字列を送信
+  const {
+    orderItems, // 注文した商品リスト
+    shippingAddress, // 配送先住所
+    paymentMethod, // 支払い方法
+    itemsPrice, // 商品合計金額
+    taxPrice, // 税金
+    shippingPrice, // 配送料
+    totalPrice, // 合計金額
+  } = req.body;
+
+  // 注文商品が空の場合はエラーを返す
+  if (orderItems && orderItems.length === 0) {
+    res.status(400); // 400: Bad Request
+    throw new Error("No order items"); // エラーメッセージを投げる
+  } else {
+    // 注文情報を新規作成
+    const order = new Order({
+      orderItems: orderItems.map((x) => ({
+        ...x, // 商品情報をコピー
+        product: x._id, // 商品IDをproductフィールドに設定
+        _id: undefined, // MongoDBのデフォルトの_idを削除
+      })),
+      user: req.user._id, // ログインしているユーザーのIDを関連付け
+      shippingAddress, // 配送先住所
+      paymentMethod, // 支払い方法
+      itemsPrice, // 商品合計金額
+      taxPrice, // 税金
+      shippingPrice, // 配送料
+      totalPrice, // 合計金額
+    });
+
+    // データベースに保存
+    const createdOrder = await order.save();
+
+    // 作成した注文をレスポンスとして返す
+    res.status(201).json(createdOrder); // 201: Created
+  }
 });
 
 // @desc    Get order by ID
 // @route   GET /api/orders/:id
 // @access  Private
+// 指定されたIDの注文情報を取得する処理
 const getOrderById = asyncHandler(async (req, res) => {
-  // 指定されたIDの注文情報を取得する処理
-  res.send("get order by id"); // 仮のレスポンスとして文字列を送信
+  // 注文IDに基づいてデータベースから注文を検索
+  const order = await Order.findById(req.params.id).populate(
+    "user", // userフィールドを参照し、関連するユーザー情報を取得
+    "name email" // 必要なユーザー情報（名前とメールアドレス）のみ取得
+  );
+
+  if (order) {
+    // 注文が見つかった場合はレスポンスとして返す
+    res.status(200).json(order); // 200: OK
+  } else {
+    // 注文が見つからなかった場合は404エラーを返す
+    res.status(404); // 404: Not Found
+    throw new Error("Order not found"); // エラーメッセージを投げる
+  }
 });
 
 // @desc    Update order to paid
@@ -36,9 +85,12 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 // @desc    Get logged in user orders
 // @route   GET /api/orders/myorders
 // @access  Private
+// ログイン中のユーザーの注文一覧を取得する処理
 const getMyOrders = asyncHandler(async (req, res) => {
-  // ログイン中のユーザーの注文一覧を取得する処理
-  res.send("get logged in user orders"); // 仮のレスポンスとして文字列を送信
+  // ログインしているユーザーのIDに基づいて注文を検索
+  const orders = await Order.find({ user: req.user._id });
+  // ユーザーの注文リストをレスポンスとして返す
+  res.status(200).json(orders); // 200: OK
 });
 
 // @desc    Get all orders
