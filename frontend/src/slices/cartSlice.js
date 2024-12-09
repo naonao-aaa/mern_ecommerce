@@ -54,6 +54,13 @@ const cartSlice = createSlice({
       // カートの状態をローカルストレージに保存
       localStorage.setItem("cart", JSON.stringify(state));
     },
+    // カートのアイテムをすべてクリアするアクション
+    clearCartItems: (state, action) => {
+      // カート内の商品を空の配列にすることでリセット
+      state.cartItems = [];
+      // ローカルストレージに現在のカート状態を保存（空のカート情報を上書き保存）
+      localStorage.setItem("cart", JSON.stringify(state));
+    },
   },
 });
 
@@ -62,6 +69,7 @@ export const {
   removeFromCart,
   saveShippingAddress,
   savePaymentMethod,
+  clearCartItems,
 } = cartSlice.actions; // 各actionをエクスポート
 
 export default cartSlice.reducer; // cartSliceのreducerをエクスポートして、Reduxストアで使用可能にする
