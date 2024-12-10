@@ -24,7 +24,7 @@ router.route("/mine").get(protect, getMyOrders); // protectミドルウェアで
 
 // `/:id`ルート
 // - GETリクエスト: 特定の注文詳細を取得（認証が必要、管理者専用）
-router.route("/:id").get(protect, admin, getOrderById); // protectミドルウェアとadminミドルウェアで認証後、getOrderByIdコントローラーを実行
+router.route("/:id").get(protect, getOrderById); // protectミドルウェアとadminミドルウェアで認証後、getOrderByIdコントローラーを実行
 
 // `/:id/pay`ルート
 // - PUTリクエスト: 注文を支払い済みに更新（認証が必要）

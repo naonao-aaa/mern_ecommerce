@@ -15,8 +15,17 @@ export const orderApiSlice = apiSlice.injectEndpoints({
         body: { ...order }, // リクエストのbodyに注文データを設定（orderオブジェクトを展開して渡す）
       }),
     }),
+    // 注文詳細取得用のエンドポイント
+    getOrderDetails: builder.query({
+      // クライアントが注文詳細を取得するためのクエリ設定
+      query: (id) => ({
+        url: `${ORDERS_URL}/${id}`, // 動的に注文IDをURLに埋め込む（例: /api/orders/{id}）
+      }),
+      keepUnusedDataFor: 5, // 未使用のデータを5秒間キャッシュとして保持（パフォーマンス向上のため）
+    }),
   }),
 });
 
 // エクスポート
-export const { useCreateOrderMutation } = orderApiSlice;
+export const { useCreateOrderMutation, useGetOrderDetailsQuery } =
+  orderApiSlice;
