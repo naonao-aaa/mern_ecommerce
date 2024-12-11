@@ -69,9 +69,35 @@ const getOrderById = asyncHandler(async (req, res) => {
 // @desc    Update order to paid
 // @route   PUT /api/orders/:id/pay
 // @access  Private
+// 指定されたIDの注文を支払い済みに更新する処理
 const updateOrderToPaid = asyncHandler(async (req, res) => {
-  // 指定されたIDの注文を支払い済みに更新する処理
-  res.send("update order to paid"); // 仮のレスポンスとして文字列を送信
+  // データベースから、指定されたIDの注文を検索
+  const order = await Order.findById(req.params.id);
+
+  if (order) {
+    // 支払い済みフラグをtrueに設定
+    order.isPaid = true;
+    // 支払いが完了した日時を記録（現在の日時）
+    order.paidAt = Date.now();
+    // 支払いの詳細情報を記録
+    order.paymentResult = {
+      id: req.body.id, // 支払いサービスから提供された一意の支払いID
+      status: req.body.status, // 支払いのステータス（例: "Completed"）
+      update_time: req.body.update_time, // 支払いが完了した日時（サービス提供側のデータ）
+      email_address: req.body.payer.email_address, // 支払いを行ったユーザーのメールアドレス
+    };
+
+    // 注文情報を更新してデータベースに保存
+    const updatedOrder = await order.save();
+
+    // 更新された注文情報をレスポンスとして返す
+    res.status(200).json(updatedOrder);
+  } else {
+    // 注文が見つからなかった場合は404エラーを返す
+    res.status(404);
+    // エラーメッセージを投げる
+    throw new Error("Order not found");
+  }
 });
 
 // @desc    Update order to delivered

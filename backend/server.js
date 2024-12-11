@@ -39,6 +39,12 @@ app.use("/api/users", userRoutes);
 // すべての注文関連のリクエストは、このルーティングモジュールで処理される
 app.use("/api/orders", orderRoutes);
 
+// PayPalのクライアントIDを返すルート（"/api/config/paypal）を設定
+app.get("/api/config/paypal", (req, res) =>
+  // 環境変数からPayPalのクライアントIDを取得し、JSON形式でレスポンスとして返す
+  res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
+);
+
 // エンドポイント：ルート（/）
 // APIの動作確認用のシンプルなエンドポイント。文字列を返す
 app.get("/", (req, res) => {
