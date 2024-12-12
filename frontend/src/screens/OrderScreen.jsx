@@ -75,6 +75,49 @@ const OrderScreen = () => {
     }
   }, [errorPayPal, loadingPayPal, order, paypal, paypalDispatch]); // 依存配列：これらの値が変更された際に再実行
 
+  function onApprove(data, actions) {
+    // PayPal支払い承認後に呼び出されるコールバック関数
+    return actions.order.capture().then(async function (details) {
+      try {
+        // 支払いが承認された後、注文IDと支払い詳細をサーバーに送信して処理
+        await payOrder({ orderId, details });
+        refetch(); // 注文データを再取得してUIを最新の状態に更新
+        toast.success("Order is paid"); // 支払い成功時に画面に成功通知を表示
+      } catch (err) {
+        // エラーが発生した場合、エラーメッセージを通知として表示
+        toast.error(err?.data?.message || err.error);
+      }
+    });
+  }
+
+  async function onApproveTest() {
+    // テスト用の支払い承認処理
+    await payOrder({ orderId, details: { payer: {} } }); // モックデータを使用してAPIに送信
+    refetch(); // 注文データを再取得
+    toast.success("Order is paid"); // テスト支払い成功通知
+  }
+
+  function onError(err) {
+    // PayPal処理中にエラーが発生した場合に呼び出されるコールバック関数
+    toast.error(err.message); // エラーメッセージを通知として表示
+  }
+
+  function createOrder(data, actions) {
+    // 支払い用の注文データを作成する関数
+    return actions.order
+      .create({
+        purchase_units: [
+          {
+            amount: { value: order.totalPrice }, // 注文合計金額を設定
+          },
+        ],
+      })
+      .then((orderID) => {
+        // PayPalが生成した注文IDを返す
+        return orderID;
+      });
+  }
+
   // UIの条件分岐: ローディング中、エラー時、正常時
   return isLoading ? (
     <Loader /> // ローディング中はLoaderコンポーネントを表示
@@ -196,7 +239,35 @@ const OrderScreen = () => {
                   <Col>{order.totalPrice}円</Col> {/* 合計金額 */}
                 </Row>
               </ListGroup.Item>
-              {/* 支払いや配送完了のボタンを追加する場所 */}
+              {!order.isPaid && ( // 支払いがまだ行われていない場合に支払いボタンを表示
+                <ListGroup.Item>
+                  {/* 支払い処理中のローディングスピナーを表示 */}
+                  {loadingPay && <Loader />}
+                  {isPending ? ( // PayPalスクリプトがロード中の場合
+                    <Loader /> // ローディングスピナーを表示
+                  ) : (
+                    <div>
+                      {/* 
+                      <Button
+                        style={{ marginBottom: "10px" }}
+                        onClick={onApproveTest} // テスト支払い処理を実行
+                      >
+                        Test Pay Order
+                      </Button>
+                      */}
+                      <div>
+                        {/* PayPalの支払いボタンコンポーネント */}
+                        <PayPalButtons
+                          createOrder={createOrder} // 支払い用の注文データを作成する関数を指定
+                          onApprove={onApprove} // 支払い承認時の処理を指定
+                          onError={onError} // エラー発生時の処理を指定
+                        ></PayPalButtons>
+                      </div>
+                    </div>
+                  )}
+                </ListGroup.Item>
+              )}
+
               {/* {MARK AS DELIVERED PLACEHOLDER} */}
             </ListGroup>
           </Card>
