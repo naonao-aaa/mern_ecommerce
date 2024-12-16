@@ -41,6 +41,14 @@ export const orderApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5, // 未使用のデータを5秒間キャッシュとして保持（パフォーマンス向上のため）
     }),
+    // 自分の注文一覧を取得するためのエンドポイント
+    getMyOrders: builder.query({
+      // ユーザーが自身の注文履歴を取得するクエリ設定
+      query: () => ({
+        url: `${ORDERS_URL}/mine`, // 自分の注文一覧を取得するエンドポイントURL（/api/orders/mine）
+      }),
+      keepUnusedDataFor: 5, // データを5秒間キャッシュとして保持
+    }),
   }),
 });
 
@@ -50,4 +58,5 @@ export const {
   useGetOrderDetailsQuery,
   usePayOrderMutation,
   useGetPaypalClientIdQuery,
+  useGetMyOrdersQuery,
 } = orderApiSlice;
