@@ -29,9 +29,21 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data, // リクエストボディとして送信するデータ
       }),
     }),
+    // プロフィール情報更新エンドポイント
+    profile: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/profile`, // プロフィール更新用のエンドポイントURL
+        method: "PUT", // PUTメソッドで既存のデータを更新
+        body: data, // 更新するユーザープロフィール情報をリクエストボディに含める
+      }),
+    }),
   }),
 });
 
 // エクスポート
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation } =
-  userApiSlice;
+export const {
+  useLoginMutation,
+  useLogoutMutation,
+  useRegisterMutation,
+  useProfileMutation,
+} = userApiSlice;
