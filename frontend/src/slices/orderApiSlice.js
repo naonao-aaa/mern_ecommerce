@@ -49,6 +49,14 @@ export const orderApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5, // データを5秒間キャッシュとして保持
     }),
+    // 全注文情報を取得するためのエンドポイント（管理者用）
+    getOrders: builder.query({
+      // 管理者がすべての注文情報を取得するクエリ設定
+      query: () => ({
+        url: ORDERS_URL, // 全注文を取得するエンドポイントURL（/api/orders）
+      }),
+      keepUnusedDataFor: 5, // 未使用データを5秒間キャッシュとして保持
+    }),
   }),
 });
 
@@ -59,4 +67,5 @@ export const {
   usePayOrderMutation,
   useGetPaypalClientIdQuery,
   useGetMyOrdersQuery,
+  useGetOrdersQuery,
 } = orderApiSlice;

@@ -124,7 +124,13 @@ const getMyOrders = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const getOrders = asyncHandler(async (req, res) => {
   // 全ての注文情報を取得する処理（管理者のみ実行可能）
-  res.send("get all orders"); // 仮のレスポンスとして文字列を送信
+
+  // データベースからすべての注文情報を検索
+  // populateを使って、関連するユーザー情報（idと名前）を取得
+  const orders = await Order.find({}).populate("user", "id name");
+
+  // 200 OK のレスポンスとともに、取得した注文情報をJSON形式で返す。
+  res.status(200).json(orders);
 });
 
 export {
