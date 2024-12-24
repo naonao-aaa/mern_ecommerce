@@ -11,7 +11,7 @@ import {
   usePayOrderMutation,
   useGetPaypalClientIdQuery,
   useDeliverOrderMutation,
-} from "../slices/orderApiSlice";
+} from "../slices/ordersApiSlice";
 
 const OrderScreen = () => {
   // React RouterからURLパラメータ（注文ID）を取得

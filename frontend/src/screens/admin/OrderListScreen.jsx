@@ -3,7 +3,7 @@ import { Table, Button } from "react-bootstrap"; // BootstrapのTableとButton�
 import { FaTimes } from "react-icons/fa"; // アイコン表示用のライブラリから"×"アイコンをインポート
 import Message from "../../components/Message"; // エラーメッセージなどを表示するカスタムコンポーネント
 import Loader from "../../components/Loader"; // 読み込み中状態を示すカスタムコンポーネント
-import { useGetOrdersQuery } from "../../slices/orderApiSlice"; // 全注文データを取得するカスタムフック
+import { useGetOrdersQuery } from "../../slices/ordersApiSlice"; // 全注文データを取得するカスタムフック
 
 const OrderListScreen = () => {
   // `useGetOrdersQuery`フックを使用して、注文データの取得・読み込み状態・エラー状態を取得
