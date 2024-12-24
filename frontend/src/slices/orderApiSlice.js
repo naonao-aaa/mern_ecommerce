@@ -57,6 +57,15 @@ export const orderApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5, // 未使用データを5秒間キャッシュとして保持
     }),
+    // deliverOrderエンドポイントを定義
+    deliverOrder: builder.mutation({
+      // クライアントが注文を配送済みに更新するために使用するミューテーション（データ変更操作）
+      query: (orderId) => ({
+        // 配送済みにする対象の注文IDをURLに埋め込む
+        url: `${ORDERS_URL}/${orderId}/deliver`, // 例: /api/orders/{orderId}/deliver
+        method: "PUT", // HTTPメソッドをPUTに指定（既存リソースの更新）
+      }),
+    }),
   }),
 });
 
@@ -68,4 +77,5 @@ export const {
   useGetPaypalClientIdQuery,
   useGetMyOrdersQuery,
   useGetOrdersQuery,
+  useDeliverOrderMutation,
 } = orderApiSlice;

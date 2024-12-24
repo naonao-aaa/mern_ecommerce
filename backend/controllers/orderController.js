@@ -103,9 +103,27 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 // @desc    Update order to delivered
 // @route   PUT /api/orders/:id/deliver
 // @access  Private/Admin
+// 指定されたIDの注文を配送済みに更新する処理（管理者のみ実行可能）
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
-  // 指定されたIDの注文を配送済みに更新する処理（管理者のみ実行可能）
-  res.send("update order to delivered"); // 仮のレスポンスとして文字列を送信
+  // `req.params.id`で受け取った注文IDをもとに、データベースから注文情報を検索
+  const order = await Order.findById(req.params.id);
+
+  // 注文が見つかった場合
+  if (order) {
+    // 配送済みフラグをtrueに設定
+    order.isDelivered = true;
+    // 配送が完了した日時を記録（現在の日時）
+    order.deliveredAt = Date.now();
+
+    // 更新された注文情報をデータベースに保存
+    const updatedOrder = await order.save();
+
+    // 更新後の注文情報をレスポンスとして返す
+    res.json(updatedOrder);
+  } else {
+    res.status(404);
+    throw new Error("Order not found");
+  }
 });
 
 // @desc    Get logged in user orders
