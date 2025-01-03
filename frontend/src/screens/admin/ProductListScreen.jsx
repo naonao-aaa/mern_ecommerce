@@ -6,6 +6,7 @@ import Loader from "../../components/Loader";
 import {
   useGetProductsQuery,
   useCreateProductMutation,
+  useDeleteProductMutation,
 } from "../../slices/productsApiSlice";
 import { toast } from "react-toastify";
 
@@ -13,10 +14,19 @@ const ProductListScreen = () => {
   // 商品リストを取得するためのカスタムフック
   const { data: products, isLoading, error, refetch } = useGetProductsQuery();
 
-  // 商品を削除するためのイベントハンドラー
-  const deleteHandler = (productId) => {
-    // 現在は削除処理をログ出力するだけのスタブ
-    console.log(`delete product: ${productId}`);
+  const [deleteProduct, { isLoading: loadingDelete }] =
+    useDeleteProductMutation();
+
+  const deleteHandler = async (id) => {
+    if (window.confirm("本当に削除して良いですか？")) {
+      try {
+        await deleteProduct(id);
+        toast.success("Product deleted");
+        refetch();
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
+    }
   };
 
   const [createProduct, { isLoading: loadingCreate }] =
@@ -48,6 +58,7 @@ const ProductListScreen = () => {
       </Row>
 
       {loadingCreate && <Loader />}
+      {loadingDelete && <Loader />}
       {/* データの状態による条件分岐 */}
       {isLoading ? (
         // ローディング中はスピナーを表示
