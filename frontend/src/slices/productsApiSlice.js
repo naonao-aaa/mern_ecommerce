@@ -1,4 +1,4 @@
-import { PRODUCTS_URL } from "../constants"; // APIのエンドポイントURLを定数としてインポート
+import { PRODUCTS_URL, UPLOADS_URL } from "../constants"; // APIのエンドポイントURLを定数としてインポート
 import { apiSlice } from "./apiSlice"; // 既存のapiSliceをインポートして拡張するために使用
 
 // 商品APIエンドポイントを追加するproductsApiSliceを作成
@@ -36,6 +36,13 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Product"],
     }),
+    uploadProductImage: builder.mutation({
+      query: (data) => ({
+        url: `${UPLOADS_URL}`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -44,4 +51,5 @@ export const {
   useGetProductDetailsQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
+  useUploadProductImageMutation,
 } = productsApiSlice;
