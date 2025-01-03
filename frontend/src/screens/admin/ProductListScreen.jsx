@@ -3,7 +3,11 @@ import { Table, Button, Row, Col } from "react-bootstrap";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
-import { useGetProductsQuery } from "../../slices/productsApiSlice";
+import {
+  useGetProductsQuery,
+  useCreateProductMutation,
+} from "../../slices/productsApiSlice";
+import { toast } from "react-toastify";
 
 const ProductListScreen = () => {
   // 商品リストを取得するためのカスタムフック
@@ -15,6 +19,20 @@ const ProductListScreen = () => {
     console.log(`delete product: ${productId}`);
   };
 
+  const [createProduct, { isLoading: loadingCreate }] =
+    useCreateProductMutation();
+
+  const createProductHandler = async () => {
+    if (window.confirm("新しい製品を作成してもよろしいですか?")) {
+      try {
+        await createProduct();
+        refetch();
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
+    }
+  };
+
   return (
     <>
       {/* 上部の行: タイトルと「新規商品作成」ボタン */}
@@ -23,12 +41,13 @@ const ProductListScreen = () => {
           <h1>Products</h1> {/* ページタイトル */}
         </Col>
         <Col className="text-end">
-          <Button className="btn-sm m-3">
+          <Button className="my-3" onClick={createProductHandler}>
             <FaPlus /> Create Product {/* 商品作成ボタン */}
           </Button>
         </Col>
       </Row>
 
+      {loadingCreate && <Loader />}
       {/* データの状態による条件分岐 */}
       {isLoading ? (
         // ローディング中はスピナーを表示
