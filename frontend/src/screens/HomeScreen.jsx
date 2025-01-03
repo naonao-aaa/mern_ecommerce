@@ -1,6 +1,6 @@
 import { Row, Col } from "react-bootstrap";
 import Product from "../components/Product"; // Productコンポーネントをインポート
-import { useGetProductsQuery } from "../slices/productApiSlice"; // RTK QueryのuseGetProductsQueryフックをインポート
+import { useGetProductsQuery } from "../slices/productsApiSlice"; // RTK QueryのuseGetProductsQueryフックをインポート
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
