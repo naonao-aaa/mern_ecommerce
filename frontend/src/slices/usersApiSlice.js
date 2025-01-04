@@ -37,6 +37,13 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data, // 更新するユーザープロフィール情報をリクエストボディに含める
       }),
     }),
+    getUsers: builder.query({
+      query: () => ({
+        url: USERS_URL,
+      }),
+      providesTags: ["User"],
+      keepUnusedDataFor: 5,
+    }),
   }),
 });
 
@@ -46,4 +53,5 @@ export const {
   useLogoutMutation,
   useRegisterMutation,
   useProfileMutation,
+  useGetUsersQuery,
 } = userApiSlice;
