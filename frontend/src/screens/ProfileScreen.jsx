@@ -6,8 +6,8 @@ import { FaTimes } from "react-icons/fa"; // アイコン（×マーク）を表
 import { toast } from "react-toastify"; // 通知メッセージ表示用ライブラリ
 import Message from "../components/Message"; // カスタムメッセージコンポーネント
 import Loader from "../components/Loader"; // 読み込み中スピナーコンポーネント
-import { useProfileMutation } from "../slices/userApiSlice"; // プロフィール更新用のRTK Queryミューテーション
-import { useGetMyOrdersQuery } from "../slices/orderApiSlice"; // ユーザーの注文一覧取得用のRTK Query
+import { useProfileMutation } from "../slices/usersApiSlice"; // プロフィール更新用のRTK Queryミューテーション
+import { useGetMyOrdersQuery } from "../slices/ordersApiSlice"; // ユーザーの注文一覧取得用のRTK Query
 import { setCredentials } from "../slices/authSlice"; // 認証情報を更新するアクション
 
 const ProfileScreen = () => {
@@ -114,6 +114,8 @@ const ProfileScreen = () => {
           <Button type="submit" variant="primary">
             Update
           </Button>
+
+          {loadingUpdateProfile && <Loader />}
         </Form>
       </Col>
 

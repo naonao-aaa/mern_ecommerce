@@ -17,3 +17,5 @@ export const ORDERS_URL = "/api/orders";
 
 // PayPalの設定情報を取得するためのAPIエンドポイント
 export const PAYPAL_URL = "/api/config/paypal";
+
+export const UPLOADS_URL = "/api/upload";

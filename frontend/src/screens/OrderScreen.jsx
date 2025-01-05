@@ -10,7 +10,8 @@ import {
   useGetOrderDetailsQuery,
   usePayOrderMutation,
   useGetPaypalClientIdQuery,
-} from "../slices/orderApiSlice";
+  useDeliverOrderMutation,
+} from "../slices/ordersApiSlice";
 
 const OrderScreen = () => {
   // React RouterからURLパラメータ（注文ID）を取得
@@ -37,6 +38,11 @@ const OrderScreen = () => {
   // `paypalDispatch`を使用してスクリプトの状態や設定を変更可能
   // `isPending`はスクリプトがロード中であるかを示すフラグ
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+
+  // `useDeliverOrderMutation`フックを使用し、APIリクエストを送信する関数`deliverOrder`と そのリクエストの状態（ローディング中かどうか）を示す`loadingDeliver`を取得。
+  // このフックは、注文を「配達完了」に更新するAPIエンドポイントに対応する。
+  const [deliverOrder, { isLoading: loadingDeliver }] =
+    useDeliverOrderMutation();
 
   // PayPalクライアントIDを取得するためのカスタムフックを使用
   // `paypal`には取得したクライアントIDが含まれる
@@ -117,6 +123,16 @@ const OrderScreen = () => {
         return orderID;
       });
   }
+
+  const deliverOrderHandler = async () => {
+    try {
+      await deliverOrder(orderId); // `orderId`を指定してAPIリクエストを送信し、注文を「配達完了」に更新。
+      refetch(); // 注文の最新情報を再取得し、UIを最新の状態に更新。
+      toast.success("Order delivered"); // 配達完了成功時に成功通知を表示。
+    } catch (err) {
+      toast.error(err?.data?.message || err.message);
+    }
+  };
 
   // UIの条件分岐: ローディング中、エラー時、正常時
   return isLoading ? (
@@ -268,7 +284,23 @@ const OrderScreen = () => {
                 </ListGroup.Item>
               )}
 
-              {/* {MARK AS DELIVERED PLACEHOLDER} */}
+              {/* 配達処理中の状態を示すローディングスピナーを表示。 */}
+              {loadingDeliver && <Loader />}
+
+              {userInfo && // ユーザーがログインしているか確認。
+                userInfo.isAdmin && // ユーザーが管理者であるか確認。
+                order.isPaid && // 注文が支払い済みであるか確認。
+                !order.isDelivered && ( // 注文がまだ配達完了していないか確認。
+                  <ListGroup.Item>
+                    <Button
+                      type="button"
+                      className="btn btn-block"
+                      onClick={deliverOrderHandler} // 配達完了処理を実行するハンドラを呼び出す。
+                    >
+                      配達完了
+                    </Button>
+                  </ListGroup.Item>
+                )}
             </ListGroup>
           </Card>
         </Col>

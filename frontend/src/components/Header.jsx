@@ -4,7 +4,7 @@ import logo from "../assets/logo.png"; // ロゴ画像をインポート
 import { LinkContainer } from "react-router-bootstrap"; // React Router用のリンクコンテナ
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom"; // ページ遷移を可能にするフックをインポート
-import { useLogoutMutation } from "../slices/userApiSlice"; // ログアウトAPIエンドポイント用のフックをインポート
+import { useLogoutMutation } from "../slices/usersApiSlice"; // ログアウトAPIエンドポイント用のフックをインポート
 import { logout } from "../slices/authSlice"; // ログアウトアクションをインポート
 
 const Header = () => {
@@ -81,6 +81,19 @@ const Header = () => {
                     <FaUser /> Sign In
                   </Nav.Link>
                 </LinkContainer>
+              )}
+              {userInfo && userInfo.isAdmin && (
+                <NavDropdown title="Admin" id="adminmenu">
+                  <LinkContainer to="/admin/productlist">
+                    <NavDropdown.Item>Products</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/admin/userlist">
+                    <NavDropdown.Item>Users</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/admin/orderlist">
+                    <NavDropdown.Item>Orders</NavDropdown.Item>
+                  </LinkContainer>
+                </NavDropdown>
               )}
             </Nav>
           </Navbar.Collapse>

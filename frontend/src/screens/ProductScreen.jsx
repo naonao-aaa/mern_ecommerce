@@ -11,7 +11,7 @@ import {
   Card,
   Button,
 } from "react-bootstrap";
-import { useGetProductDetailsQuery } from "../slices/productApiSlice"; // 商品の詳細情報を取得するためのRTK Queryフックをインポート
+import { useGetProductDetailsQuery } from "../slices/productsApiSlice"; // 商品の詳細情報を取得するためのRTK Queryフックをインポート
 import Rating from "../components/Rating"; // 評価（Rating）を表示するためのコンポーネント
 import Loader from "../components/Loader";
 import Message from "../components/Message";
