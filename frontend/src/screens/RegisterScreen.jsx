@@ -4,7 +4,7 @@ import { Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader"; // 読み込み中の状態を表示するコンポーネント
 import FormContainer from "../components/FormContainer"; // フォームを中央揃えにするためのレイアウトコンポーネント
-import { useRegisterMutation } from "../slices/userApiSlice"; // 登録API呼び出し用のフック
+import { useRegisterMutation } from "../slices/usersApiSlice"; // 登録API呼び出し用のフック
 import { setCredentials } from "../slices/authSlice"; // Reduxでユーザー情報を保存するアクション
 import { toast } from "react-toastify"; // 通知メッセージを表示するライブラリ
 

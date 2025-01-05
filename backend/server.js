@@ -1,3 +1,4 @@
+import path from "path";
 import express from "express"; // Expressフレームワークをインポート
 import dotenv from "dotenv"; // dotenvモジュールをインポート（環境変数を読み込むため）
 dotenv.config(); // .envファイルに記載された環境変数を読み込んで、process.envに設定
@@ -6,6 +7,7 @@ import connectDB from "./config/db.js"; // MongoDBとの接続を行うための
 import productRoutes from "./routes/productRoutes.js"; // 商品に関するルーティングを管理するモジュールをインポート
 import userRoutes from "./routes/userRoutes.js"; // ユーザーに関するルーティングを管理するモジュールをインポート
 import orderRoutes from "./routes/orderRoutes.js"; // 注文に関するルーティングを管理するモジュールをインポート
+import uploadRoutes from "./routes/uploadRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js"; // 404エラーハンドラーとカスタムエラーハンドラーをインポート
 
 // サーバーが使用するポート番号を設定。環境変数PORTが設定されていない場合はデフォルトで5000番を使用
@@ -39,17 +41,26 @@ app.use("/api/users", userRoutes);
 // すべての注文関連のリクエストは、このルーティングモジュールで処理される
 app.use("/api/orders", orderRoutes);
 
+app.use("/api/upload", uploadRoutes);
+
 // PayPalのクライアントIDを返すルート（"/api/config/paypal）を設定
 app.get("/api/config/paypal", (req, res) =>
   // 環境変数からPayPalのクライアントIDを取得し、JSON形式でレスポンスとして返す
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
 );
 
-// エンドポイント：ルート（/）
-// APIの動作確認用のシンプルなエンドポイント。文字列を返す
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
+const __dirname = path.resolve();
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static(path.join(__dirname, "/frontend/build")));
+//   app.get("*", (req, res) =>
+//     res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
+//   );
+// } else {
+//   app.get("/", (req, res) => {
+//     res.send("API is running....");
+//   });
+// }
 
 // 404エラーをキャッチするためのミドルウェア
 // エラーを生成し、次のミドルウェアに渡す

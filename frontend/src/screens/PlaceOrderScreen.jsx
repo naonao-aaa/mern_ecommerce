@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux"; // Reduxのdispatchとst
 import Message from "../components/Message"; // カスタムメッセージコンポーネント
 import CheckoutSteps from "../components/CheckoutSteps"; // チェックアウトステップを表示するコンポーネント
 import Loader from "../components/Loader"; // ローディングスピナーコンポーネント
-import { useCreateOrderMutation } from "../slices/orderApiSlice"; // orderApiSliceからのカスタムフック
+import { useCreateOrderMutation } from "../slices/ordersApiSlice"; // orderApiSliceからのカスタムフック
 import { clearCartItems } from "../slices/cartSlice"; // カートをクリアするためのアクション
 
 const PlaceOrderScreen = () => {
