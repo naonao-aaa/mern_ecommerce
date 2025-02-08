@@ -6,14 +6,24 @@ import Product from "../models/productModel.js"; // Productモデルをインポ
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
   // 1ページあたりの表示件数を設定
-  const pageSize = 4;
+  const pageSize = 8;
   // クエリパラメータからページ番号を取得（デフォルトは1）
   const page = Number(req.query.pageNumber) || 1;
 
-  // 全商品の数を取得（ページ数を計算するため）
-  const count = await Product.countDocuments();
-  // 商品データを取得（指定されたページの分だけ取得）
-  const products = await Product.find()
+  // クエリパラメータからキーワードを取得し、正規表現を適用（部分一致 & 大文字小文字区別なし）
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword, // キーワードを含む商品名を検索
+          $options: "i", // 大文字・小文字を区別しない
+        },
+      }
+    : {}; // 検索ワードがない場合は、フィルターなし
+
+  // 検索条件に一致する商品の総数を取得（ページ数の計算に使用）
+  const count = await Product.countDocuments({ ...keyword });
+  // 検索条件に一致する商品データを取得（指定されたページの分だけ取得）
+  const products = await Product.find({ ...keyword })
     .limit(pageSize) // 表示件数を制限
     .skip(pageSize * (page - 1)); // ページごとにスキップする件数を計算
 

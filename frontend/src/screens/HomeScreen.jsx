@@ -1,5 +1,6 @@
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Product from "../components/Product"; // Productコンポーネントをインポート
 import { useGetProductsQuery } from "../slices/productsApiSlice"; // RTK QueryのuseGetProductsQueryフックをインポート
 import Loader from "../components/Loader";
@@ -7,17 +8,24 @@ import Message from "../components/Message";
 import Paginate from "../components/Paginate";
 
 const HomeScreen = () => {
-  // URLパラメータからページ番号を取得
-  const { pageNumber } = useParams();
-  console.log(pageNumber);
+  // URLパラメータからページ番号と検索キーワードを取得
+  const { pageNumber, keyword } = useParams();
+  // console.log(pageNumber);
 
   // 商品データを取得
   const { data, isLoading, error } = useGetProductsQuery({
     pageNumber, // ページ番号をパラメータとして渡す
+    keyword, // 検索ワード
   });
 
   return (
     <>
+      {/* 検索キーワードが存在する場合、戻るボタンを表示 */}
+      {keyword && (
+        <Link to="/" className="btn btn-light mb-4">
+          戻る
+        </Link>
+      )}
       {isLoading ? (
         <Loader />
       ) : error ? (
@@ -35,7 +43,11 @@ const HomeScreen = () => {
             ))}
           </Row>
 
-          <Paginate pages={data.pages} page={data.page} />
+          <Paginate
+            pages={data.pages}
+            page={data.page}
+            keyword={keyword ? keyword : ""} // 検索キーワードがあれば渡す
+          />
         </>
       )}
     </>
