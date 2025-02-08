@@ -6,7 +6,7 @@ import Product from "../models/productModel.js"; // Productモデルをインポ
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
   // 1ページあたりの表示件数を設定
-  const pageSize = 2;
+  const pageSize = 4;
   // クエリパラメータからページ番号を取得（デフォルトは1）
   const page = Number(req.query.pageNumber) || 1;
 
