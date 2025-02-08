@@ -8,9 +8,9 @@ export const productsApiSlice = apiSlice.injectEndpoints({
     // getProductsエンドポイントを定義(商品一覧取得API（ページネーション対応）)
     getProducts: builder.query({
       // 商品データを取得するためのHTTPリクエスト設定
-      query: ({ pageNumber }) => ({
+      query: ({ keyword, pageNumber }) => ({
         url: PRODUCTS_URL,
-        params: { pageNumber },
+        params: { keyword, pageNumber }, // 検索ワードとページ番号をクエリパラメータとして送信
       }),
       keepUnusedDataFor: 5, // 未使用データをキャッシュしておく時間（秒単位）。ここでは5秒間保持
     }),

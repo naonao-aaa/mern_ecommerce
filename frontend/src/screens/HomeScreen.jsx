@@ -7,13 +7,14 @@ import Message from "../components/Message";
 import Paginate from "../components/Paginate";
 
 const HomeScreen = () => {
-  // URLパラメータからページ番号を取得
-  const { pageNumber } = useParams();
-  console.log(pageNumber);
+  // URLパラメータからページ番号と検索キーワードを取得
+  const { pageNumber, keyword } = useParams();
+  // console.log(pageNumber);
 
   // 商品データを取得
   const { data, isLoading, error } = useGetProductsQuery({
     pageNumber, // ページ番号をパラメータとして渡す
+    keyword, // 検索ワード
   });
 
   return (
@@ -35,7 +36,11 @@ const HomeScreen = () => {
             ))}
           </Row>
 
-          <Paginate pages={data.pages} page={data.page} />
+          <Paginate
+            pages={data.pages}
+            page={data.page}
+            keyword={keyword ? keyword : ""} // 検索キーワードがあれば渡す
+          />
         </>
       )}
     </>
