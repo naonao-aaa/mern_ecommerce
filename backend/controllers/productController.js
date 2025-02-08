@@ -88,10 +88,55 @@ const deleteProduct = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    商品にレビューを追加する
+// @route   POST /api/products/:id/reviews
+// @access  Private
+const createProductReview = asyncHandler(async (req, res) => {
+  const { rating, comment } = req.body; // リクエストボディから評価（rating）とコメント（comment）を取得
+  const product = await Product.findById(req.params.id); // 商品IDを使ってデータベースから商品を検索
+
+  if (product) {
+    // 既に同じユーザーがレビューを書いていないかをチェック
+    const alreadyReviewed = product.reviews.find(
+      (r) => r.user.toString() === req.user._id.toString()
+    );
+
+    if (alreadyReviewed) {
+      res.status(400);
+      throw new Error("Product already reviewed");
+    }
+
+    // 新しいレビューを作成
+    const review = {
+      name: req.user.name, // レビュアーの名前
+      rating: Number(rating), // 数値として評価を格納
+      comment, // コメント内容
+      user: req.user._id, // レビュアーのユーザーID
+    };
+
+    // 商品のレビューリストに追加
+    product.reviews.push(review);
+    product.numReviews = product.reviews.length; // レビュー数を更新
+
+    // 商品の平均評価を再計算
+    product.rating =
+      product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+      product.reviews.length;
+
+    // データベースに保存
+    await product.save();
+    res.status(201).json({ message: "Review added" });
+  } else {
+    res.status(404);
+    throw new Error("Product not found");
+  }
+});
+
 export {
   getProducts,
   getProductById,
   createProduct,
   updateProduct,
   deleteProduct,
+  createProductReview,
 };
