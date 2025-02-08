@@ -5,13 +5,13 @@ import { apiSlice } from "./apiSlice"; // 既存のapiSliceをインポートし
 export const productsApiSlice = apiSlice.injectEndpoints({
   // エンドポイントの設定を行う
   endpoints: (builder) => ({
-    // getProductsエンドポイントを定義
+    // getProductsエンドポイントを定義(商品一覧取得API（ページネーション対応）)
     getProducts: builder.query({
       // 商品データを取得するためのHTTPリクエスト設定
-      query: () => ({
-        url: PRODUCTS_URL, // リクエスト先のURL ("/api/products")
+      query: ({ pageNumber }) => ({
+        url: PRODUCTS_URL,
+        params: { pageNumber },
       }),
-      providesTags: ["Product"],
       keepUnusedDataFor: 5, // 未使用データをキャッシュしておく時間（秒単位）。ここでは5秒間保持
     }),
     // getProductDetailsエンドポイントを定義

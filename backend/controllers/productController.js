@@ -5,10 +5,20 @@ import Product from "../models/productModel.js"; // Productモデルをインポ
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
-  // MongoDBから全ての商品データを取得する
-  const products = await Product.find({});
-  // 取得した商品データをレスポンスとして返す（JSON形式）
-  res.json(products);
+  // 1ページあたりの表示件数を設定
+  const pageSize = 4;
+  // クエリパラメータからページ番号を取得（デフォルトは1）
+  const page = Number(req.query.pageNumber) || 1;
+
+  // 全商品の数を取得（ページ数を計算するため）
+  const count = await Product.countDocuments();
+  // 商品データを取得（指定されたページの分だけ取得）
+  const products = await Product.find()
+    .limit(pageSize) // 表示件数を制限
+    .skip(pageSize * (page - 1)); // ページごとにスキップする件数を計算
+
+  // 商品データとページ情報をJSONで返す
+  res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
 // @desc    特定の商品をIDで取得する
