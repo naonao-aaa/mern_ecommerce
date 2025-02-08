@@ -1,5 +1,6 @@
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Product from "../components/Product"; // Productコンポーネントをインポート
 import { useGetProductsQuery } from "../slices/productsApiSlice"; // RTK QueryのuseGetProductsQueryフックをインポート
 import Loader from "../components/Loader";
@@ -19,6 +20,12 @@ const HomeScreen = () => {
 
   return (
     <>
+      {/* 検索キーワードが存在する場合、戻るボタンを表示 */}
+      {keyword && (
+        <Link to="/" className="btn btn-light mb-4">
+          戻る
+        </Link>
+      )}
       {isLoading ? (
         <Loader />
       ) : error ? (
