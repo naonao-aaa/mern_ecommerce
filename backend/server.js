@@ -51,16 +51,21 @@ app.get("/api/config/paypal", (req, res) =>
 
 const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
-// if (process.env.NODE_ENV === "production") {
-//   app.use(express.static(path.join(__dirname, "/frontend/build")));
-//   app.get("*", (req, res) =>
-//     res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
-//   );
-// } else {
-//   app.get("/", (req, res) => {
-//     res.send("API is running....");
-//   });
-// }
+
+if (process.env.NODE_ENV === "production") {
+  // 本番環境ではフロントエンドのビルド済みファイルを静的ファイルとして提供
+  app.use(express.static(path.join(__dirname, "/frontend/build")));
+
+  // すべてのリクエストに対して、Reactアプリのindex.htmlを返す
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
+  );
+} else {
+  // 開発環境ではシンプルなAPIレスポンスを返す
+  app.get("/", (req, res) => {
+    res.send("API is running....");
+  });
+}
 
 // 404エラーをキャッチするためのミドルウェア
 // エラーを生成し、次のミドルウェアに渡す
