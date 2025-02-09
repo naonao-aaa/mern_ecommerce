@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Form,
   Row,
@@ -11,10 +11,15 @@ import {
   Card,
   Button,
 } from "react-bootstrap";
-import { useGetProductDetailsQuery } from "../slices/productsApiSlice"; // 商品の詳細情報を取得するためのRTK Queryフックをインポート
+import { toast } from "react-toastify";
+import {
+  useGetProductDetailsQuery,
+  useCreateReviewMutation,
+} from "../slices/productsApiSlice";
 import Rating from "../components/Rating"; // 評価（Rating）を表示するためのコンポーネント
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import Meta from "../components/Meta";
 import { addToCart } from "../slices/cartSlice"; // カートに商品を追加するためのアクションをインポート
 
 const ProductScreen = () => {
@@ -24,6 +29,8 @@ const ProductScreen = () => {
   const navigate = useNavigate(); // ページ遷移を行うためのフック
 
   const [qty, setQty] = useState(1); // 商品の数量を管理するstate
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
 
   // 商品をカートに追加するハンドラー関数
   const addToCartHandler = () => {
@@ -34,8 +41,31 @@ const ProductScreen = () => {
   const {
     data: product,
     isLoading,
+    refetch,
     error,
   } = useGetProductDetailsQuery(productId); // 商品IDを使って商品詳細を取得
+
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const [createReview, { isLoading: loadingProductReview }] =
+    useCreateReviewMutation();
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      await createReview({
+        productId,
+        rating,
+        comment,
+      }).unwrap();
+      refetch();
+      toast.success("Review created successfully");
+      setRating(0); //初期値に戻す
+      setComment(""); //初期値に戻す
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
 
   return (
     <>
@@ -51,6 +81,7 @@ const ProductScreen = () => {
         </Message>
       ) : (
         <>
+          <Meta title={product.name} description={product.description} />
           <Row>
             <Col md={6}>
               <Image src={product.image} alt={product.name} fluid />
@@ -127,6 +158,68 @@ const ProductScreen = () => {
                   </ListGroup.Item>
                 </ListGroup>
               </Card>
+            </Col>
+          </Row>
+
+          <Row className="review">
+            <Col md={6}>
+              <h2>レビュー</h2>
+              {product.reviews.length === 0 && <Message>No Reviews</Message>}
+              <ListGroup variant="flush">
+                {product.reviews.map((review) => (
+                  <ListGroup.Item key={review._id}>
+                    <strong>{review.name}</strong>
+                    <Rating value={review.rating} />
+                    <p>{review.createdAt.substring(0, 10)}</p>
+                    <p>{review.comment}</p>
+                  </ListGroup.Item>
+                ))}
+                <ListGroup.Item>
+                  <h2>カスタマーレビューを書く</h2>
+                  {loadingProductReview && <Loader />}
+                  {userInfo ? (
+                    <Form onSubmit={submitHandler}>
+                      <Form.Group className="my-2" controlId="rating">
+                        <Form.Label>評価</Form.Label>
+                        <Form.Control
+                          as="select"
+                          required
+                          value={rating}
+                          onChange={(e) => setRating(e.target.value)}
+                        >
+                          <option value="">選択してください</option>
+                          <option value="1">1 - 悪い</option>
+                          <option value="2">2 - まあまあ</option>
+                          <option value="3">3 - 良い</option>
+                          <option value="4">4 - とても良い</option>
+                          <option value="5">5 - 非常に優れている</option>
+                        </Form.Control>
+                      </Form.Group>
+                      <Form.Group className="my-2" controlId="comment">
+                        <Form.Label>コメント</Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          row="3"
+                          required
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                        ></Form.Control>
+                      </Form.Group>
+                      <Button
+                        disabled={loadingProductReview}
+                        type="submit"
+                        variant="primary"
+                      >
+                        送信
+                      </Button>
+                    </Form>
+                  ) : (
+                    <Message>
+                      Please <Link to="/login">sign in</Link> to write a review
+                    </Message>
+                  )}
+                </ListGroup.Item>
+              </ListGroup>
             </Col>
           </Row>
         </>

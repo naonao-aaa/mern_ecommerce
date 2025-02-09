@@ -5,10 +5,30 @@ import Product from "../models/productModel.js"; // Productモデルをインポ
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
-  // MongoDBから全ての商品データを取得する
-  const products = await Product.find({});
-  // 取得した商品データをレスポンスとして返す（JSON形式）
-  res.json(products);
+  // 1ページあたりの表示件数を設定
+  const pageSize = process.env.PAGINATION_LIMIT;
+  // クエリパラメータからページ番号を取得（デフォルトは1）
+  const page = Number(req.query.pageNumber) || 1;
+
+  // クエリパラメータからキーワードを取得し、正規表現を適用（部分一致 & 大文字小文字区別なし）
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword, // キーワードを含む商品名を検索
+          $options: "i", // 大文字・小文字を区別しない
+        },
+      }
+    : {}; // 検索ワードがない場合は、フィルターなし
+
+  // 検索条件に一致する商品の総数を取得（ページ数の計算に使用）
+  const count = await Product.countDocuments({ ...keyword });
+  // 検索条件に一致する商品データを取得（指定されたページの分だけ取得）
+  const products = await Product.find({ ...keyword })
+    .limit(pageSize) // 表示件数を制限
+    .skip(pageSize * (page - 1)); // ページごとにスキップする件数を計算
+
+  // 商品データとページ情報をJSONで返す
+  res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
 // @desc    特定の商品をIDで取得する
@@ -88,10 +108,55 @@ const deleteProduct = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    商品にレビューを追加する
+// @route   POST /api/products/:id/reviews
+// @access  Private
+const createProductReview = asyncHandler(async (req, res) => {
+  const { rating, comment } = req.body; // リクエストボディから評価（rating）とコメント（comment）を取得
+  const product = await Product.findById(req.params.id); // 商品IDを使ってデータベースから商品を検索
+
+  if (product) {
+    // 既に同じユーザーがレビューを書いていないかをチェック
+    const alreadyReviewed = product.reviews.find(
+      (r) => r.user.toString() === req.user._id.toString()
+    );
+
+    if (alreadyReviewed) {
+      res.status(400);
+      throw new Error("Product already reviewed");
+    }
+
+    // 新しいレビューを作成
+    const review = {
+      name: req.user.name, // レビュアーの名前
+      rating: Number(rating), // 数値として評価を格納
+      comment, // コメント内容
+      user: req.user._id, // レビュアーのユーザーID
+    };
+
+    // 商品のレビューリストに追加
+    product.reviews.push(review);
+    product.numReviews = product.reviews.length; // レビュー数を更新
+
+    // 商品の平均評価を再計算
+    product.rating =
+      product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+      product.reviews.length;
+
+    // データベースに保存
+    await product.save();
+    res.status(201).json({ message: "Review added" });
+  } else {
+    res.status(404);
+    throw new Error("Product not found");
+  }
+});
+
 export {
   getProducts,
   getProductById,
   createProduct,
   updateProduct,
   deleteProduct,
+  createProductReview,
 };

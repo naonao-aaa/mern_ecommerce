@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom"; // ページ遷移を可能にするフックをインポート
 import { useLogoutMutation } from "../slices/usersApiSlice"; // ログアウトAPIエンドポイント用のフックをインポート
 import { logout } from "../slices/authSlice"; // ログアウトアクションをインポート
+import SearchBox from "./SearchBox";
 
 const Header = () => {
   // Reduxのstateからカート内のアイテム情報を取得
@@ -47,6 +48,7 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
+              <SearchBox />
               <LinkContainer to="/cart">
                 <Nav.Link>
                   <FaShoppingCart /> Cart

@@ -1,8 +1,10 @@
 import { LinkContainer } from "react-router-bootstrap";
 import { Table, Button, Row, Col } from "react-bootstrap";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { useParams } from "react-router-dom";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
+import Paginate from "../../components/Paginate";
 import {
   useGetProductsQuery,
   useCreateProductMutation,
@@ -11,8 +13,11 @@ import {
 import { toast } from "react-toastify";
 
 const ProductListScreen = () => {
+  const { pageNumber } = useParams();
   // 商品リストを取得するためのカスタムフック
-  const { data: products, isLoading, error, refetch } = useGetProductsQuery();
+  const { data, isLoading, error, refetch } = useGetProductsQuery({
+    pageNumber,
+  });
 
   const [deleteProduct, { isLoading: loadingDelete }] =
     useDeleteProductMutation();
@@ -82,7 +87,7 @@ const ProductListScreen = () => {
             </thead>
             <tbody>
               {/* サーバーから取得した商品のリストを表示 */}
-              {products.map((product) => (
+              {data.products.map((product) => (
                 <tr key={product._id}>
                   <td>{product._id}</td> {/* 商品ID */}
                   <td>{product.name}</td> {/* 商品名 */}
@@ -111,7 +116,7 @@ const ProductListScreen = () => {
             </tbody>
           </Table>
           {/* ページネーション */}
-          {/* PAGINATE PLACEHOLDER */}
+          <Paginate pages={data.pages} page={data.page} isAdmin={true} />
         </>
       )}
     </>
