@@ -6,6 +6,7 @@ import { useGetProductsQuery } from "../slices/productsApiSlice"; // RTK Query�
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Paginate from "../components/Paginate";
+import Meta from "../components/Meta";
 
 const HomeScreen = () => {
   // URLパラメータからページ番号と検索キーワードを取得
@@ -34,6 +35,7 @@ const HomeScreen = () => {
         </Message>
       ) : (
         <>
+          <Meta />
           <h1>商品一覧</h1>
           <Row>
             {data.products.map((product) => (

@@ -19,6 +19,7 @@ import {
 import Rating from "../components/Rating"; // 評価（Rating）を表示するためのコンポーネント
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import Meta from "../components/Meta";
 import { addToCart } from "../slices/cartSlice"; // カートに商品を追加するためのアクションをインポート
 
 const ProductScreen = () => {
@@ -80,6 +81,7 @@ const ProductScreen = () => {
         </Message>
       ) : (
         <>
+          <Meta title={product.name} description={product.description} />
           <Row>
             <Col md={6}>
               <Image src={product.image} alt={product.name} fluid />
