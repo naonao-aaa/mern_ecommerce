@@ -7,7 +7,7 @@ const products = [
       "シンプルで洗練された北欧デザインの木製チェア。リビングやダイニングに最適。持続可能なオーク材を使用。",
     brand: "スカンジホーム",
     category: "家具",
-    price: 15800, // 円
+    price: 5800, // 円
     countInStock: 15,
     rating: 4.8,
     numReviews: 18,
@@ -20,9 +20,9 @@ const products = [
       "快適さとクラシックデザインを兼ね備えたヴィンテージレザーソファ。深みのあるブラウンのレザーがリビングに高級感をプラス。",
     brand: "レトロリビング",
     category: "家具",
-    price: 128000, // 円
+    price: 12800, // 円
     countInStock: 5,
-    rating: 4.7,
+    rating: 3.7,
     numReviews: 22,
   },
   {
@@ -33,7 +33,7 @@ const products = [
       "アーム調節可能なモダンでスタイリッシュなフロアランプ。リーディングコーナーや寝室に最適で、暖かい光が心地よい雰囲気を演出します。",
     brand: "ブライトライト",
     category: "照明",
-    price: 9800, // 円
+    price: 4800, // 円
     countInStock: 12,
     rating: 4.3,
     numReviews: 15,
@@ -46,9 +46,9 @@ const products = [
       "再生木材を使用したラスティックなコーヒーテーブル。ユニークなテクスチャーと自然の美しさが特徴で、リビングルームの中心にぴったり。",
     brand: "エコファーニッシュ",
     category: "家具",
-    price: 29800, // 円
+    price: 9800, // 円
     countInStock: 8,
-    rating: 4.9,
+    rating: 3.9,
     numReviews: 30,
   },
   {
@@ -59,9 +59,9 @@ const products = [
       "ゴールドフレームの大きな装飾用ウォールミラー。玄関やリビングに優雅さと奥行きをプラスします。",
     brand: "ゴールデンゲイズ",
     category: "インテリア雑貨",
-    price: 6800, // 円
+    price: 5800, // 円
     countInStock: 20,
-    rating: 4.5,
+    rating: 2.5,
     numReviews: 12,
   },
   {
@@ -72,9 +72,9 @@ const products = [
       "快適さとサポート力を兼ね備えたエルゴノミックオフィスチェア。高さ調整や腰部サポート機能があり、長時間の作業に最適。",
     brand: "ワークウェル",
     category: "家具",
-    price: 23800, // 円
+    price: 13800, // 円
     countInStock: 10,
-    rating: 4.6,
+    rating: 3.6,
     numReviews: 16,
   },
 ];

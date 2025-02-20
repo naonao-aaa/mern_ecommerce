@@ -11,7 +11,7 @@ const OrderListScreen = () => {
 
   return (
     <>
-      <h1>Orders</h1>
+      <h1>注文履歴</h1>
       {/* データの読み込み状態を判定 */}
       {isLoading ? (
         // 読み込み中の場合、Loaderコンポーネントを表示
@@ -47,7 +47,7 @@ const OrderListScreen = () => {
                 {/* 注文日を表示（日時文字列の最初の10文字を抽出） */}
                 <td>{order.createdAt.substring(0, 10)}</td>
                 {/* 注文合計金額を表示 */}
-                <td>${order.totalPrice}</td>
+                <td>{order.totalPrice}円</td>
                 {/* 支払い状態を表示 */}
                 <td>
                   {order.isPaid ? (
