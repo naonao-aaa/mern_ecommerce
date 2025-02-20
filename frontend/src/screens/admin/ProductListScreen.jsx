@@ -53,7 +53,7 @@ const ProductListScreen = () => {
       {/* 上部の行: タイトルと「新規商品作成」ボタン */}
       <Row className="align-items-center">
         <Col>
-          <h1>Products</h1> {/* ページタイトル */}
+          <h1>商品一覧</h1>
         </Col>
         <Col className="text-end">
           <Button className="my-3" onClick={createProductHandler}>

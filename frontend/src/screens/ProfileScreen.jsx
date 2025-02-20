@@ -64,7 +64,7 @@ const ProfileScreen = () => {
     <Row>
       {/* プロフィール更新フォーム */}
       <Col md={3}>
-        <h2>User Profile</h2>
+        <h2>プロフィール</h2>
 
         <Form onSubmit={submitHandler}>
           {/* 名前フィールド */}
@@ -112,7 +112,7 @@ const ProfileScreen = () => {
           </Form.Group>
 
           <Button type="submit" variant="primary">
-            Update
+            更新
           </Button>
 
           {loadingUpdateProfile && <Loader />}
@@ -121,7 +121,7 @@ const ProfileScreen = () => {
 
       {/* ユーザーの注文一覧 */}
       <Col md={9}>
-        <h2>My Orders</h2>
+        <h2>ご注文履歴</h2>
         {isLoading ? (
           <Loader /> // 読み込み中のスピナー
         ) : error ? (
